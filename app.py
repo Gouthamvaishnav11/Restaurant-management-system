@@ -2,13 +2,18 @@ from flask import Flask,redirect,render_template,request, flash,url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-
+# In more detail, Flask(__name__) creates an instance of the Flask class, passing the name of the module (__name__) as an argument. This helps Flask understand where to look for resources such as templates and static files.
+# Initialize a new Flask application instance
 app=Flask(__name__)
-
+# Connecting flask form sqlite database
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///restaurant.db'
+# creating an object of sqlalchemy class
 app.config['SECRET_KEY']='your_secret_key'
 
+# we are creating a database object and linking it with our Flask app to handle database operations using SQLAlchemy.
 db=SQLAlchemy(app)
+
+# writing python class to insert data into table
 
 # Define models
 class User(db.Model):
@@ -59,7 +64,14 @@ class Reservation(db.Model):
     reservation_time = db.Column(db.DateTime, nullable=False)
 
 
-
+# first route : index html
+# In a Flask application, the @ symbol is used for decorators, which are a way to modify the behavior of functions or methods. The line @app.route('/') is a decorator that Flask provides to map a URL endpoint to a specific function.
+# This specific decorator, @app.route('/'), tells Flask that when a user accesses the root URL ('/'), it should call the home function. Decorators in Flask are used to connect URL patterns to view functions, enabling the application to respond to different web requests.
+# @app.route('/') is a decorator provided by Flask.
+# It tells Flask: “When someone visits / (home page), run the home() function.”
+@app.route('/',methods=['GET','POST'])
+def index():
+    if request.method=="POST":
 # Routes
 @app.route('/')
 def index():
@@ -138,8 +150,10 @@ def report():
     orders = Order.query.all()
     reservations = Reservation.query.all()
     return render_template('report.html', orders=orders, reservations=reservations)
-
+    
+#  run the Flask app only when this file is executed directly, not when it’s imported.
 
 if __name__ == '__main__':
     app.run(debug=True)
+
     
